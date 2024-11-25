@@ -119,9 +119,12 @@ export const generateProject = async (projectName: string) =>
 
     mainSpinner.text = "Initializing Next.js...";
 
-    // Initialize Next.js project
     execSync(
-      'npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"',
+      'npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --yes',
+      {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
+      }
     );
 
 
@@ -129,6 +132,10 @@ export const generateProject = async (projectName: string) =>
     mainSpinner.text = "Installing dependencies...";
     execSync(
       "npm install @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom --save-dev",
+      {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
+      }
     );
     // mainSpinner.text = "Initializing Shadcn UI...";
     // // execSync("npx shadcn@latest init -d");
@@ -159,7 +166,14 @@ export const generateProject = async (projectName: string) =>
     await fs.writeFile("src/app/layout.tsx", layoutTemplate);
 
 
-    execSync('npm run prepare');
+    try {
+      execSync('npm run prepare', {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
+      });
+    } catch (error) {
+      console.warn("Warning: 'prepare' script not found in package.json, skipping...");
+    }
 
     // Create Husky hooks
     mainSpinner.text = "Creating Husky hooks...";
@@ -167,7 +181,14 @@ export const generateProject = async (projectName: string) =>
     await fs.mkdir(huskyDir, { recursive: true });
     await fs.writeFile(path.join(huskyDir, 'pre-commit'), preCommitTemplate);
     await fs.writeFile(path.join(huskyDir, 'commit-msg'), commitMsgTemplate);
-    execSync('chmod +x .husky/pre-commit .husky/commit-msg');
+    try {
+      execSync('chmod +x .husky/pre-commit .husky/commit-msg', {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
+      });
+    } catch (error) {
+      console.warn("Warning: Unable to set execute permissions on Husky hooks. On Windows, this is expected.");
+    }
 
     // Add configuration files
     mainSpinner.text = "Creating configuration files...";
@@ -259,6 +280,7 @@ Recommended extensions are:
   } catch (error: any) {
     mainSpinner.fail('Project setup failed.');
     console.error(error.message);
+    process.exit(1);
   }
 
 };
