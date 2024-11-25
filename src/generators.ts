@@ -130,8 +130,8 @@ export const generateProject = async (projectName: string) =>
     execSync(
       "npm install @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom --save-dev",
     );
-    mainSpinner.text = "Initializing Shadcn UI...";
-    execSync("npx shadcn@latest init -d");
+    // mainSpinner.text = "Initializing Shadcn UI...";
+    // // execSync("npx shadcn@latest init -d");
 
     // Create project structure
     mainSpinner.text = "Creating project structure...";
