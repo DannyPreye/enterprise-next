@@ -111,97 +111,97 @@ module.exports = {
 
 export const generateProject = async (projectName: string) =>
 {
-    const mainSpinner = ora('Creating project...').start();
-    try {
-        // Create project directory
-        await fs.mkdir(projectName);
-        process.chdir(projectName);
+  const mainSpinner = ora('Creating project...').start();
+  try {
+    // Create project directory
+    await fs.mkdir(projectName);
+    process.chdir(projectName);
 
-        mainSpinner.text = "Initializing Next.js...";
+    mainSpinner.text = "Initializing Next.js...";
 
-        // Initialize Next.js project
-        execSync(
-            'npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"',
-        );
-
-
-        // Install additional dependencies
-        mainSpinner.text = "Installing dependencies...";
-        execSync(
-            "npm install @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom --save-dev",
-        );
-        mainSpinner.text = "Initializing Shadcn UI...";
-        execSync("npx shadcn@latest init -y");
-
-        // Create project structure
-        mainSpinner.text = "Creating project structure...";
-        const dirs = [
-            "src/components/ui",
-            "src/components/common",
-            "src/components/forms",
-            "src/components/layouts",
-            "src/lib/hooks",
-            "src/lib/utils",
-            "src/lib/api",
-            "src/lib/constants",
-            "src/lib/types",
-            "src/lib/validation",
-            "src/styles",
-            "src/tests/unit",
-            "src/tests/integration",
-            "src/tests/e2e",
-        ];
-
-        dirs.forEach((dir) => fs.mkdirSync(dir, { recursive: true }));
-
-        // Copy templates
-        await fs.writeFile("jest.config.js", jestConfigTemplate);
-        await fs.writeFile("src/app/layout.tsx", layoutTemplate);
+    // Initialize Next.js project
+    execSync(
+      'npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"',
+    );
 
 
-        execSync('npm run prepare');
+    // Install additional dependencies
+    mainSpinner.text = "Installing dependencies...";
+    execSync(
+      "npm install @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom --save-dev",
+    );
+    mainSpinner.text = "Initializing Shadcn UI...";
+    execSync("npx shadcn@latest init -d");
 
-        // Create Husky hooks
-        mainSpinner.text = "Creating Husky hooks...";
-        const huskyDir = path.join(process.cwd(), '.husky');
-        await fs.mkdir(huskyDir, { recursive: true });
-        await fs.writeFile(path.join(huskyDir, 'pre-commit'), preCommitTemplate);
-        await fs.writeFile(path.join(huskyDir, 'commit-msg'), commitMsgTemplate);
-        execSync('chmod +x .husky/pre-commit .husky/commit-msg');
+    // Create project structure
+    mainSpinner.text = "Creating project structure...";
+    const dirs = [
+      "src/components/ui",
+      "src/components/common",
+      "src/components/forms",
+      "src/components/layouts",
+      "src/lib/hooks",
+      "src/lib/utils",
+      "src/lib/api",
+      "src/lib/constants",
+      "src/lib/types",
+      "src/lib/validation",
+      "src/styles",
+      "src/tests/unit",
+      "src/tests/integration",
+      "src/tests/e2e",
+    ];
 
-        // Add configuration files
-        mainSpinner.text = "Creating configuration files...";
-        await fs.writeFile('.commitlintrc.js', commitlintConfig);
-        await fs.writeFile('.eslintrc.js', eslintConfig);
+    dirs.forEach((dir) => fs.mkdirSync(dir, { recursive: true }));
+
+    // Copy templates
+    await fs.writeFile("jest.config.js", jestConfigTemplate);
+    await fs.writeFile("src/app/layout.tsx", layoutTemplate);
 
 
-        // Add VS Code settings for better developer experience
-        mainSpinner.text = "Adding VS Code settings...";
-        const vscodePath = path.join(process.cwd(), '.vscode');
-        await fs.mkdir(vscodePath, { recursive: true });
-        await fs.writeFile(
-            path.join(vscodePath, 'settings.json'),
-            JSON.stringify({
-                "editor.formatOnSave": true,
-                "editor.defaultFormatter": "esbenp.prettier-vscode",
-                "editor.codeActionsOnSave": {
-                    "source.fixAll.eslint": true
-                },
-                "[javascript]": {
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
-                },
-                "[typescript]": {
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
-                },
-                "[typescriptreact]": {
-                    "editor.defaultFormatter": "esbenp.prettier-vscode"
-                }
-            }, null, 2)
-        );
+    execSync('npm run prepare');
 
-        await fs.writeFile(
-            'README.md',
-            `# ${projectName}
+    // Create Husky hooks
+    mainSpinner.text = "Creating Husky hooks...";
+    const huskyDir = path.join(process.cwd(), '.husky');
+    await fs.mkdir(huskyDir, { recursive: true });
+    await fs.writeFile(path.join(huskyDir, 'pre-commit'), preCommitTemplate);
+    await fs.writeFile(path.join(huskyDir, 'commit-msg'), commitMsgTemplate);
+    execSync('chmod +x .husky/pre-commit .husky/commit-msg');
+
+    // Add configuration files
+    mainSpinner.text = "Creating configuration files...";
+    await fs.writeFile('.commitlintrc.js', commitlintConfig);
+    await fs.writeFile('.eslintrc.js', eslintConfig);
+
+
+    // Add VS Code settings for better developer experience
+    mainSpinner.text = "Adding VS Code settings...";
+    const vscodePath = path.join(process.cwd(), '.vscode');
+    await fs.mkdir(vscodePath, { recursive: true });
+    await fs.writeFile(
+      path.join(vscodePath, 'settings.json'),
+      JSON.stringify({
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+      }, null, 2)
+    );
+
+    await fs.writeFile(
+      'README.md',
+      `# ${projectName}
 
 ## Getting Started
 
@@ -248,64 +248,64 @@ Recommended extensions are:
 - Jest
 - GitLens
 `
-        );
-        mainSpinner.succeed('Project setup complete!');
+    );
+    mainSpinner.succeed('Project setup complete!');
 
-        console.log('Project setup complete! Next steps:');
-        console.log('1. cd', projectName);
-        console.log('2. npm install');
-        console.log('3. npm run dev');
-        console.log('\nUse npm run commit to create conventional commits');
-    } catch (error: any) {
-        mainSpinner.fail('Project setup failed.');
-        console.error(error.message);
-    }
+    console.log('Project setup complete! Next steps:');
+    console.log('1. cd', projectName);
+    console.log('2. npm install');
+    console.log('3. npm run dev');
+    console.log('\nUse npm run commit to create conventional commits');
+  } catch (error: any) {
+    mainSpinner.fail('Project setup failed.');
+    console.error(error.message);
+  }
 
 };
 
 export const generateComponent = async (
-    name: string,
-    componentPath = "src/components/common",
+  name: string,
+  componentPath = "src/components/common",
 ) =>
 {
-    const mainSpinner = ora('Creating component...').start();
-    try {
-        const fullPath = path.join(process.cwd(), componentPath, name);
+  const mainSpinner = ora('Creating component...').start();
+  try {
+    const fullPath = path.join(process.cwd(), componentPath, name);
 
-        // Create component directory
-        await fs.mkdir(fullPath, { recursive: true });
+    // Create component directory
+    await fs.mkdir(fullPath, { recursive: true });
 
-        // Generate component files
-        mainSpinner.text = "Creating component files...";
-        await fs.writeFile(
-            path.join(fullPath, `${name}.tsx`),
-            componentTemplate(name),
-        );
+    // Generate component files
+    mainSpinner.text = "Creating component files...";
+    await fs.writeFile(
+      path.join(fullPath, `${name}.tsx`),
+      componentTemplate(name),
+    );
 
-        mainSpinner.text = "Creating tests files...";
-        await fs.writeFile(
-            path.join(fullPath, `${name}.test.tsx`),
-            componentTestTemplate(name),
-        );
-        mainSpinner.succeed('Component created!');
-    } catch (error) {
-        mainSpinner.fail('Component creation failed.');
-        console.error(error);
+    mainSpinner.text = "Creating tests files...";
+    await fs.writeFile(
+      path.join(fullPath, `${name}.test.tsx`),
+      componentTestTemplate(name),
+    );
+    mainSpinner.succeed('Component created!');
+  } catch (error) {
+    mainSpinner.fail('Component creation failed.');
+    console.error(error);
 
-    }
+  }
 };
 
 export const generatePage = async (route: string) =>
 {
-    const fullPath = path.join(process.cwd(), "src/app", route);
+  const fullPath = path.join(process.cwd(), "src/app", route);
 
-    // Create page directory
-    await fs.mkdir(fullPath, { recursive: true });
+  // Create page directory
+  await fs.mkdir(fullPath, { recursive: true });
 
-    // Generate page files
-    await fs.writeFile(
-        path.join(fullPath, "page.tsx"),
-        `
+  // Generate page files
+  await fs.writeFile(
+    path.join(fullPath, "page.tsx"),
+    `
         interface Props{
         // Add custom props here
         }
@@ -318,11 +318,11 @@ export default function ${route.split("/").pop()?.charAt(0).toUpperCase()}${rout
   );
 }
 `,
-    );
+  );
 
-    await fs.writeFile(
-        path.join(fullPath, "page.test.tsx"),
-        `
+  await fs.writeFile(
+    path.join(fullPath, "page.test.tsx"),
+    `
 import { render, screen } from '@testing-library/react';
 import ${route.split("/").pop()?.charAt(0).toUpperCase()}${route.split("/").pop()?.slice(1)}Page from './page';
 
@@ -333,7 +333,7 @@ describe('${route} Page', () => {
   });
 });
 `,
-    );
+  );
 };
 
 // src/templates/project/app/layout.tsx
