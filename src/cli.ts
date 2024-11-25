@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { generateProject, generateComponent, generatePage } from "./generators";
+import { generateProject, generateComponent, generatePage } from "./generators.js";
 
 
 const program = new Command();
