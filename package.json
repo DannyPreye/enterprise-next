@@ -4,6 +4,7 @@
     "description": "An opinionated Next.js 14 template generator with built-in testing and best practices",
     "main": "dist/cli.js",
     "types": "dist/cli.d.ts",
+    "type": "module",
     "bin": {
         "enterprise-nextjs-template": "./dist/cli.js"
     },
