@@ -2,6 +2,7 @@ import { execSync } from "child_process";
 import fs from "fs-extra";
 import path from "path";
 import ora from "ora";
+import os from "os";
 
 // src/templates/project/.eslintrc.js
 export const eslintConfig = `
@@ -112,6 +113,7 @@ module.exports = {
 export const generateProject = async (projectName: string) =>
 {
   const mainSpinner = ora('Creating project...').start();
+  const isWindows = os.platform() === 'win32';
   try {
     // Create project directory
     await fs.mkdir(projectName);
@@ -152,13 +154,25 @@ import '@testing-library/jest-dom';
     `;
     await fs.writeFile('jest.setup.js', jestSetupContent);
 
+    // Install Husky
+    mainSpinner.text = "Installing Husky and commitlint...";
+    execSync(
+      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional",
+      {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
+      }
+    );
+
     // Update package.json to add test scripts
     const packageJson = await fs.readJSON('package.json');
     packageJson.scripts = {
       ...packageJson.scripts,
       test: 'jest',
       'test:watch': 'jest --watch',
-      'test:coverage': 'jest --coverage'
+      'test:coverage': 'jest --coverage',
+      prepare: 'husky install',
+      'pre-commit': 'npm run lint && npm run test'
     };
     await fs.writeJSON('package.json', packageJson, { spaces: 2 });
 
@@ -190,35 +204,34 @@ import '@testing-library/jest-dom';
     await fs.writeFile("src/app/layout.tsx", layoutTemplate);
 
 
-    try {
-      execSync('npm run prepare', {
-        stdio: 'inherit',
-        env: { ...process.env, FORCE_COLOR: 'true' }
-      });
-    } catch (error) {
-      console.warn("Warning: 'prepare' script not found in package.json, skipping...");
-    }
+    // Initialize Husky
+    mainSpinner.text = "Initializing Husky...";
+    execSync('npx husky install', {
+      stdio: 'inherit',
+      env: { ...process.env, FORCE_COLOR: 'true' }
+    });
 
     // Create Husky hooks
-    mainSpinner.text = "Creating Husky hooks...";
+    // Create Husky hooks directory
     const huskyDir = path.join(process.cwd(), '.husky');
     await fs.mkdir(huskyDir, { recursive: true });
-    await fs.writeFile(path.join(huskyDir, 'pre-commit'), preCommitTemplate);
-    await fs.writeFile(path.join(huskyDir, 'commit-msg'), commitMsgTemplate);
-    try {
-      execSync('chmod +x .husky/pre-commit .husky/commit-msg', {
+    // Create pre-commit hook
+    const preCommitPath = path.join(huskyDir, 'pre-commit');
+    await fs.writeFile(preCommitPath, `#!/usr/bin/env sh\n. "$(dirname -- "$0")/_/husky.sh"\n\nnpm run pre-commit`);
+
+
+    // Create commit-msg hook
+    const commitMsgPath = path.join(huskyDir, 'commit-msg');
+    await fs.writeFile(commitMsgPath, `#!/usr/bin/env sh\n. "$(dirname -- "$0")/_/husky.sh"\n\nnpx --no -- commitlint --edit "$1"`);
+
+    if (!isWindows) {
+      execSync(`chmod +x ${preCommitPath} ${commitMsgPath}`, {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
       });
-    } catch (error) {
-      console.warn("Warning: Unable to set execute permissions on Husky hooks. On Windows, this is expected.");
     }
 
-    // Add configuration files
-    mainSpinner.text = "Creating configuration files...";
     await fs.writeFile('.commitlintrc.js', commitlintConfig);
-    await fs.writeFile('.eslintrc.js', eslintConfig);
-
 
     // Add VS Code settings for better developer experience
     mainSpinner.text = "Adding VS Code settings...";
