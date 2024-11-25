@@ -128,6 +128,14 @@ export const generateProject = async (projectName: string) =>
     );
 
 
+    mainSpinner.text = "Initializing Shadcn UI...";
+    execSync("npx shadcn@latest init -d -y",
+      {
+        stdio: "inherit",
+        env: { ...process.env, FORCE_COLOR: "true" }
+      }
+    );
+
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
@@ -153,8 +161,8 @@ import '@testing-library/jest-dom';
       'test:coverage': 'jest --coverage'
     };
     await fs.writeJSON('package.json', packageJson, { spaces: 2 });
-    // mainSpinner.text = "Initializing Shadcn UI...";
-    // // execSync("npx shadcn@latest init -d");
+
+    ;
 
     // Create project structure
     mainSpinner.text = "Creating project structure...";
