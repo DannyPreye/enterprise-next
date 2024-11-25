@@ -131,12 +131,28 @@ export const generateProject = async (projectName: string) =>
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
-      "npm install @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom --save-dev",
+      "npm install --save-dev --legacy-peer-deps @testing-library/react@^14.1.2 @testing-library/jest-dom@^6.1.5 jest@^29.7.0 jest-environment-jsdom@^29.7.0",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
       }
     );
+
+    // Create jest.setup.js if it doesn't exist
+    const jestSetupContent = `
+import '@testing-library/jest-dom';
+    `;
+    await fs.writeFile('jest.setup.js', jestSetupContent);
+
+    // Update package.json to add test scripts
+    const packageJson = await fs.readJSON('package.json');
+    packageJson.scripts = {
+      ...packageJson.scripts,
+      test: 'jest',
+      'test:watch': 'jest --watch',
+      'test:coverage': 'jest --coverage'
+    };
+    await fs.writeJSON('package.json', packageJson, { spaces: 2 });
     // mainSpinner.text = "Initializing Shadcn UI...";
     // // execSync("npx shadcn@latest init -d");
 
