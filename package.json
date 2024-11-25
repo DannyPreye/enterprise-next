@@ -1,0 +1,106 @@
+{
+    "name": "enterprise-nextjs-template",
+    "version": "1.0.0",
+    "description": "An opinionated Next.js 14 template generator with built-in testing and best practices",
+    "main": "dist/cli.js",
+    "types": "dist/cli.d.ts",
+    "bin": {
+        "enterprise-nextjs-template": "./dist/cli.js"
+    },
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "rimraf dist && tsc",
+        "start": "node dist/cli.js",
+        "test": "jest",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:fix": "eslint . --ext .ts,.tsx --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "prepare": "husky install",
+        "pre-commit": "lint-staged",
+        "commit": "cz",
+        "type-check": "tsc --noEmit",
+        "prepublishOnly": "npm run build"
+    },
+    "keywords": [
+        "nextjs",
+        "cli",
+        "create-nextjs-app",
+        "enterprise",
+        "template",
+        "generator",
+        "typescript",
+        "react"
+    ],
+    "author": "Daniel Olawoyin",
+    "license": "MIT",
+    "dependencies": {
+        "chalk": "^4.1.2",
+        "commander": "^11.1.0",
+        "fs-extra": "^11.2.0",
+        "inquirer": "^9.2.12",
+        "ora": "^7.0.1"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^18.4.3",
+        "@commitlint/config-conventional": "^18.4.3",
+        "@testing-library/jest-dom": "^6.1.5",
+        "@testing-library/react": "^14.1.2",
+        "@types/fs-extra": "^11.0.4",
+        "@types/inquirer": "^9.0.7",
+        "@types/jest": "^29.5.11",
+        "@types/node": "^20.10.5",
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
+        "commitizen": "^4.3.0",
+        "cz-conventional-changelog": "^3.3.0",
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-jest": "^27.6.0",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-n": "^16.6.2",
+        "eslint-plugin-promise": "^6.6.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "husky": "^8.0.3",
+        "jest": "^29.7.0",
+        "lint-staged": "^15.2.0",
+        "prettier": "^3.1.1",
+        "rimraf": "^5.0.5",
+        "typescript": "^5.3.3"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,md}": [
+            "prettier --write"
+        ]
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DannyPreye/enterprise-next.git"
+    },
+    "bugs": {
+        "url": "https://github.com/DannyPreye/enterprise-next.git/issues"
+    },
+    "homepage": "https://github.com/DannyPreye/enterprise-next.git#readme",
+    "publishConfig": {
+        "access": "public"
+    }
+}
