@@ -157,7 +157,7 @@ import '@testing-library/jest-dom';
     // Install Husky
     mainSpinner.text = "Installing Husky and commitlint...";
     execSync(
-      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional",
+      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional --legacy-peer-deps",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
