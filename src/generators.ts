@@ -56,17 +56,11 @@ module.exports = {
 
 // src/templates/project/.husky/pre-commit
 export const preCommitTemplate = `
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 npm run pre-commit
 `;
 
 // src/templates/project/.husky/commit-msg
 export const commitMsgTemplate = `
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 npx --no -- commitlint --edit "\${1}"
 `;
 
@@ -141,7 +135,7 @@ export const generateProject = async (projectName: string) =>
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
-      "npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node --legacy-peer-deps",
+      "npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node  @types/jest --legacy-peer-deps",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
@@ -217,12 +211,12 @@ import '@testing-library/jest-dom';
     await fs.mkdir(huskyDir, { recursive: true });
     // Create pre-commit hook
     const preCommitPath = path.join(huskyDir, 'pre-commit');
-    await fs.writeFile(preCommitPath, `#!/usr/bin/env sh\n. "$(dirname -- "$0")/_/husky.sh"\n\nnpm run pre-commit`);
+    await fs.writeFile(preCommitPath, `\n\nnpm run pre-commit`);
 
 
     // Create commit-msg hook
     const commitMsgPath = path.join(huskyDir, 'commit-msg');
-    await fs.writeFile(commitMsgPath, `#!/usr/bin/env sh\n. "$(dirname -- "$0")/_/husky.sh"\n\nnpx --no -- commitlint --edit "$1"`);
+    await fs.writeFile(commitMsgPath, `\n\nnpx --no -- commitlint --edit "$1"`);
 
     if (!isWindows) {
       execSync(`chmod +x ${preCommitPath} ${commitMsgPath}`, {
@@ -280,13 +274,12 @@ import '@testing-library/jest-dom';
 - \`npm run start\`: Start production server
 - \`npm run test\`: Run tests
 - \`npm run lint\`: Check linting
-- \`npm run lint:fix\`: Fix linting issues
-- \`npm run format\`: Format code with Prettier
-- \`npm run commit\`: Create a commit using Commitizen
+
+
 
 ## Commit Convention
 
-This project uses [Conventional Commits](https://www.conventionalcommits.org/). Please use \`npm run commit\` to create commits.
+This project uses [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## Code Quality Tools
 
