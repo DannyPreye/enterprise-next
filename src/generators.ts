@@ -378,9 +378,9 @@ export const generatePage = async (route: string) =>
   await fs.writeFile(
     path.join(fullPath, "page.tsx"),
     `
-        interface Props{
-        // Add custom props here
-        }
+interface Props{
+  // Add custom props here
+}
 
 export default function ${route.split("/").pop()?.charAt(0).toUpperCase()}${route.split("/").pop()?.slice(1)}Page({}: Props) {
   return (
@@ -395,7 +395,7 @@ export default function ${route.split("/").pop()?.charAt(0).toUpperCase()}${rout
   await fs.writeFile(
     path.join(fullPath, "page.test.tsx"),
     `
-import { render} from '@testing-library/react';
+import { render, screen} from '@testing-library/react';
 import ${route.split("/").pop()?.charAt(0).toUpperCase()}${route.split("/").pop()?.slice(1)}Page from './page';
 
 describe('${route} Page', () => {
