@@ -1,6 +1,6 @@
 {
     "name": "enterprise-nextjs-template",
-    "version": "4.1.13",
+    "version": "4.1.14",
     "description": "An opinionated Next.js 14 template generator with built-in testing and best practices",
     "main": "dist/cli.js",
     "types": "dist/cli.d.ts",
