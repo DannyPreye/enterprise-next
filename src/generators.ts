@@ -124,6 +124,7 @@ export const generateProject = async (projectName: string) =>
     );
 
 
+
     mainSpinner.text = "Initializing Shadcn UI...";
     execSync("npx shadcn@latest init -d -y",
       {
@@ -138,6 +139,15 @@ export const generateProject = async (projectName: string) =>
       {
         stdio: "inherit",
         env: { ...process.env, FORCE_COLOR: "true" }
+      }
+    );
+    // next-themes
+    mainSpinner.text = "Installing next-themes";
+    execSync(
+      "npm install next-themes --legacy-peer-deps",
+      {
+        stdio: 'inherit',
+        env: { ...process.env, FORCE_COLOR: 'true' }
       }
     );
 
