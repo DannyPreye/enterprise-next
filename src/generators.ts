@@ -141,7 +141,7 @@ export const generateProject = async (projectName: string) =>
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
-      "npm install --save-dev --legacy-peer-deps @testing-library/react@^14.1.2 @testing-library/jest-dom@^6.1.5 jest@^29.7.0 jest-environment-jsdom@^29.7.0",
+      "npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
@@ -150,14 +150,31 @@ export const generateProject = async (projectName: string) =>
 
     // Create jest.setup.js if it doesn't exist
     const jestSetupContent = `
-import '@testing-library/jest-dom';
+import type { Config } from 'jest'
+import nextJest from 'next/jest.js'
+
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: './',
+})
+
+// Add any custom config to be passed to Jest
+const config: Config = {
+  coverageProvider: 'v8',
+  testEnvironment: 'jsdom',
+  // Add more setup options before each test is run
+  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+}
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+export default createJestConfig(config)';
     `;
-    await fs.writeFile('jest.setup.js', jestSetupContent);
+    await fs.writeFile('jest.config.ts', jestSetupContent);
 
     // Install Husky
     mainSpinner.text = "Installing Husky and commitlint...";
     execSync(
-      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional --legacy-peer-deps",
+      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
