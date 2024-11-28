@@ -141,7 +141,7 @@ export const generateProject = async (projectName: string) =>
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
-      "npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node",
+      "npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node --legacy-peer-deps",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
@@ -154,7 +154,7 @@ import type { Config } from 'jest'
 import nextJest from 'next/jest.js'
 
 const createJestConfig = nextJest({
-  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+
   dir: './',
 })
 
@@ -174,7 +174,7 @@ export default createJestConfig(config)';
     // Install Husky
     mainSpinner.text = "Installing Husky and commitlint...";
     execSync(
-      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional",
+      "npm install --save-dev husky @commitlint/cli @commitlint/config-conventional --legacy-peer-deps",
       {
         stdio: 'inherit',
         env: { ...process.env, FORCE_COLOR: 'true' }
