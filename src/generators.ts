@@ -132,6 +132,15 @@ export const generateProject = async (projectName: string) =>
       }
     );
 
+    // initialize the toast and button components
+    mainSpinner.text = "Initializing toast and button components...";
+    execSync("npx shadcn@latest add toaster button",
+      {
+        stdio: "inherit",
+        env: { ...process.env, FORCE_COLOR: "true" }
+      }
+    );
+
     // Install additional dependencies
     mainSpinner.text = "Installing dependencies...";
     execSync(
@@ -179,6 +188,7 @@ import '@testing-library/jest-dom';
       "src/components/common",
       "src/components/forms",
       "src/components/layouts",
+      "src/components/providers",
       "src/lib/hooks",
       "src/lib/utils",
       "src/lib/api",
@@ -196,7 +206,7 @@ import '@testing-library/jest-dom';
     // Copy templates
     await fs.writeFile("jest.config.js", jestConfigTemplate);
     await fs.writeFile("src/app/layout.tsx", layoutTemplate);
-
+    await fs.writeFile("src/components/providers/theme-provider.tsx", themeProvider);
 
     // Initialize Husky
     mainSpinner.text = "Initializing Husky...";
@@ -375,7 +385,7 @@ export default function ${route.split("/").pop()?.charAt(0).toUpperCase()}${rout
   await fs.writeFile(
     path.join(fullPath, "page.test.tsx"),
     `
-import { render, screen } from '@testing-library/react';
+import { render} from '@testing-library/react';
 import ${route.split("/").pop()?.charAt(0).toUpperCase()}${route.split("/").pop()?.slice(1)}Page from './page';
 
 describe('${route} Page', () => {
@@ -388,11 +398,27 @@ describe('${route} Page', () => {
   );
 };
 
+
+const themeProvider = `
+"use client";
+import {
+    ThemeProvider as NextThemeProvider,
+    ThemeProviderProps,
+} from "next-themes";
+
+export default function ThemeProvider({
+    children,
+    ...props
+}: ThemeProviderProps) {
+    return <NextThemeProvider {...props}>{children}</NextThemeProvider>;
+}
+`;
+
 // src/templates/project/app/layout.tsx
 export const layoutTemplate = `
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import '@/styles/globals.css';
 
