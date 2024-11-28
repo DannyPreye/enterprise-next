@@ -134,7 +134,7 @@ export const generateProject = async (projectName: string) =>
 
     // initialize the toast and button components
     mainSpinner.text = "Initializing toast and button components...";
-    execSync("npx shadcn@latest add toaster button",
+    execSync("npx shadcn@latest add toast button",
       {
         stdio: "inherit",
         env: { ...process.env, FORCE_COLOR: "true" }

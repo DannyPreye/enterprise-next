@@ -64,7 +64,7 @@ enterprise-nextjs-template new my-app
 ### Generating Components
 
 ```bash
-npx enterprise-nextjs-template generate:component Button
+npx enterprise-nextjs-template generate component Button
 # Creates:
 # - src/components/common/Button/Button.tsx
 # - src/components/common/Button/Button.test.tsx
@@ -73,7 +73,7 @@ npx enterprise-nextjs-template generate:component Button
 ### Generating Pages
 
 ```bash
-npx enterprise-nextjs-template generate:page dashboard
+npx enterprise-nextjs-template generate page dashboard
 # Creates:
 # - src/app/dashboard/page.tsx
 # - src/app/dashboard/page.test.tsx
